@@ -2,7 +2,7 @@
 
 
 
-###FunctionList
+*FunctionList*
 |Function ID|Function Owner|Function Name|Input|Output|Desc|
 |---|---|---|---|---|---|
 |A0001|hjnoh|회원가입|e-mail, PWD, PhoneNum, NickName||
