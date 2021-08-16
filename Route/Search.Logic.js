@@ -1,4 +1,4 @@
-const QUERY_GET_RESUME_ID_BY_RELATION = '      SELECT   RESUME_ID , COUNT(*)    \
+const QUERY_GET_RESUME_ID_BY_RELATION = '      SELECT   resume_id , COUNT(*)    \
                                                 FROM   relation                \
                                                 WHERE   flag = ?                \
                                                 GROUP BY   resume_id            \
@@ -13,8 +13,22 @@ const QUERY_GET_CAREERs_ID = '  SELECT  id as careerId \
                                  WHERE  occupation_id = ?';
 
 const QUERY_GET_CAREER_ID_DURATION = '  SELECT  id as careerId, \
-                                                TIMESTAMPDIFF(MONTH, start_date, IFNULL(end_data, now())) as DateDiff \
+                                                TIMESTAMPDIFF(MONTH, start_date, IFNULL(end_date, now())) as DateDiff \
                                           FROM  career ';
+
+const QUERY_GET_RESUMEID_FROM_CAREER_ID = ' SELECT  resume_id \
+                                            FROM    career_info as a (%s) as b  \
+                                            WHERE   a.career_id = b.careerId'
+
+/**
+ * Query Binding Example
+ */
+// var query = connection.query('SELECT ?? FROM ?? WHERE id = ?', [columns, 'users', userId], function (error, results, fields) {
+//     if (error) throw error;
+//     // ...
+// });
+
+
 
 /**
  * Query를 생성한다. 
