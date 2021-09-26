@@ -33,8 +33,6 @@ SELECT f.*, e.* FROM career_has_skill AS e LEFT JOIN                            
 		ON c.id = d.career_id) AS f                                                                                                                 \
 	ON e.career_id = f.id                                                                                                                           '
 
-
-
 exports.GetResumeList = function(req, res){
     let resumeList = {};
     conn.query(GetResumeListQuery, (err, result, field) => {
@@ -48,3 +46,42 @@ exports.GetResumeList = function(req, res){
     );
 }
 
+exports.GetResumeList_Search = async(req, res) => {
+    let resumeList = {};
+    let condition = '';
+    if(req.body.condition !== undefined){
+        condition += ' WHERE ';
+        if(req.body.condition.skill !== undefined){
+            condition += 'skill_id in (' + req.body.condition.skill.join(',') + ')';
+        }
+        if(req.body.condition.occupation !== undefined){
+            condition += 'occupation_id in (' + req.body.condition.occupation.join(',') + ')';
+        }
+    }
+
+    await conn.query(GetResumeListQuery + condition, (err, result, field) => {
+        if (err) {
+            console.log(Date.now() + ' - ' + err);
+            res.send('ERR');
+        }
+        resumeList = result;
+    });
+
+    res.json(resumeList);
+}
+
+
+const GetSkillInfoQuery = " SELECT skill_id , name FROM skill WHERE name_flag = 1 AND name like '%?%' "
+
+exports.GetSkillList = function(req, res){
+    let skillList = {};
+    conn.query(GetSkillInfoQuery, [res.body.skillStr], (err, result, fiels) => {
+        if(err){
+            console.log(Date.now() + ' - ' + err);
+            res.send('ERR');
+        }
+        
+        skillList = result;
+        res.json(skillList);
+    });
+}
