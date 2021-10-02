@@ -1,6 +1,8 @@
 const connection = require("../../config/mysql");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
 exports.register = (req, res) => { //email , password, phoneNumber, nickName
 
@@ -42,3 +44,28 @@ exports.register = (req, res) => { //email , password, phoneNumber, nickName
         }
     });
 }
+
+
+exports.login = function (req, res) {
+    passport.authenticate('local', {session: false}, (err, user) => {
+        if (err) {
+            console.log(Date.now() + ' - ' + err);
+            res.send(err);
+        } else if (!user) {
+            const message = '사용자가 존재하지 않습니다';
+            console.log(Date.now() + ' - ' + message);
+            res.send({message:message});
+        } else {
+            req.login(user, {session: false}, (err) => {
+                if (err) {
+                    console.log(Date.now() + ' - ' + err);
+                    res.send(err);
+                }
+                else {
+                    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
+                    res.json({ token });
+                }
+            });
+        }
+    })(req, res);
+};
