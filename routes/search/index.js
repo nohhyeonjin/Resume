@@ -1,7 +1,15 @@
 const express = require('express');
-const router = express.Router();
+const searchRouter = express.Router();
 const controller = require('./search.controller');
 
-router.post('/auth/register', controller.register);
+searchRouter.use(function(req, res, next){
+    console.log('Time: ', Date.now());
+    next();
+});
 
-module.exports = router;
+searchRouter.get('/searchSoruce', controller.searchSoruce);
+searchRouter.get('/GetResumeList', controller.GetResumeList);
+searchRouter.get('/GetResumeList_Search', controller.GetResumeList_Search);
+searchRouter.get('/GetSkillList', controller.GetSkillList);
+
+module.exports = searchRouter;
